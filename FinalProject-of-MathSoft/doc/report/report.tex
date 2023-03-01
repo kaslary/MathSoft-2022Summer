@@ -1,0 +1,97 @@
+\documentclass[a4paper]{article}
+% \usepackage{ctex}
+\usepackage[heading=true]{ctex} 
+
+%% Language and font encodings
+
+\usepackage{url}
+\usepackage{fancyhdr} 
+\usepackage{graphicx} 
+\usepackage{fontspec, listings} 
+\usepackage{float}  
+\usepackage{abstract}
+\usepackage{tikz} 
+\usetikzlibrary{calc,positioning, shapes.geometric}
+%\usepackage{algorithm2e}
+%\usepackage[linesnumbered, ruled]{algorithm2e}
+%\SetKwRepeat{Do}{do}{while}
+\renewcommand{\abstractnamefont}{\large\bfseries}
+
+\makeatletter 
+\newenvironment{tablehere}
+    {\def\@captype{table}}
+    {}
+\newenvironment{figurehere}
+    {\def\@captype{figure}}
+    {}
+\makeatother
+\RequirePackage[toc,page,title,titletoc,header]{appendix} 
+
+\RequirePackage{listings}
+\usepackage{appendix}
+
+\usepackage{multicol}
+
+\usepackage{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{
+    basicstyle=\ttfamily,
+    numbers=left, 
+    numberstyle= \tiny, 
+    keywordstyle= \color{ blue!70},
+    commentstyle= \color{red!50!green!50!blue!50}, 
+    frame=shadowbox, 
+    rulesepcolor= \color{ red!20!green!20!blue!20} ,
+    escapeinside=``, 
+    xleftmargin=2em,xrightmargin=2em, aboveskip=1em,
+    framexleftmargin=2em
+}
+
+\usepackage{amsmath}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{url}
+\usepackage{cite} % 参考文献
+\usepackage{amsmath}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=black]{hyperref}
+\usepackage{multicol} 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{makecell}
+% \usepackage[linesnumbered, ruled]{algorithm2e}
+
+\pagestyle{fancy} 
+\lhead{} 
+\chead{\CourseName{}: \Title{}} 
+\rhead{}
+\lfoot{} 
+
+%% Personal information
+\input{info/info.tex}
+
+%% 文章内容 
+\begin{document} 
+\sloppy %自动换行
+%% 封面
+\input{title/title.tex}
+
+%% 目录
+% \tableofcontents
+\setcounter{page}{1}
+% \thispagestyle{empty} 
+
+%% 正文
+\input{body/abstract.tex}
+\input{body/chapter1.tex}
+\input{body/references.tex}
+\clearpage
+
+\end{document}

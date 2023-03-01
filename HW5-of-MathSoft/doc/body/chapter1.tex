@@ -1,0 +1,46 @@
+\newpage
+\section{功能分析}
+该代码计算了$f(x)=x^2-5$的根。
+\par 
+首先，代码设置了最大迭代次数$max_iter=100$.
+\par 
+其次，\verb|struct quadratic_params params = {1.0, 0.0, -5.0}|建立了
+一个多项式$f(x)=x^2-5$。
+
+\lstset{language=c}
+\begin{lstlisting}[caption = roots.c]
+    do{
+        iter++;
+        status = gsl_root_fsolver_iterate (s);
+        r = gsl_root_fsolver_root (s);
+        x_lo = gsl_root_fsolver_x_lower (s);
+        x_hi = gsl_root_fsolver_x_upper (s);
+        status = gsl_root_test_interval (x_lo, x_hi,
+                                         0, 0.001);
+        if (status == GSL_SUCCESS)
+          printf ("Converged:\n");
+        printf ("%5d [%.7f, %.7f] %.7f %+.7f %.7f\n",
+                iter, x_lo, x_hi,
+                r, r - r_expected, 
+                x_hi - x_lo);
+      }
+    while (status == GSL_CONTINUE && iter < max_iter);
+\end{lstlisting}
+
+这一段代码利用了近似二分法的迭代求解根，其中\verb|gsl_root_fsolver_x_lower|返回了迭代的下界，
+\verb|gsl_root_fsolver_x_upper|返回了迭代的上界，
+\verb|gsl_root_fsolver_root|返回了迭代预计的根。不断的缩小迭代区间，直到最后
+求解得到根或者迭代次数到达上限。
+\par 
+输出如下：
+\begin{verbatim}
+      using brent method
+      iter [    lower,     upper]      root        err  err(est)
+        1 [1.0000000, 5.0000000] 1.0000000 -1.2360680 4.0000000
+        2 [1.0000000, 3.0000000] 3.0000000 +0.7639320 2.0000000
+        3 [2.0000000, 3.0000000] 2.0000000 -0.2360680 1.0000000
+        4 [2.2000000, 3.0000000] 2.2000000 -0.0360680 0.8000000
+        5 [2.2000000, 2.2366300] 2.2366300 +0.0005621 0.0366300
+    Converged:
+        6 [2.2360634, 2.2366300] 2.2360634 -0.0000046 0.0005666
+\end{verbatim}

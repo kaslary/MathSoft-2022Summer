@@ -1,0 +1,4 @@
+#!/bin/bash
+make
+./test test.bmp $1 $2 $3 $4 $5
+make clean

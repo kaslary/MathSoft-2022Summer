@@ -1,0 +1,210 @@
+%\multicols{2}
+\section{引言}
+朱利亚集合\cite{enwiki:1068868935}是一个在复平面上组成分形的点的集合，使用复二次多项式
+进行迭代。与曼德博集合\cite{enwiki:1094796296}相似，朱利亚集合的图像表现出一个精心设计
+的无限复杂的边界，在放大倍率增加的情况下，它展示了越来越精细的递归细节。
+朱利亚集合也和曼德博集合一样，满足分形的定义。
+在数学上，朱利亚集合的边界被定义为是分形曲线,此递归细节的样式取决于所检查的集合边界的区域。
+\par 
+但是，与曼德博集合不相同的是，朱利亚集合迭代公式中的固定常数与选取的点无关，
+换而言之，朱利亚集合的图像与迭代复常数$c$有着密切的关联。对$c$引入一个极小的
+偏差也会使得图像有很大的变化。
+\par 
+图像与$c$的联系与曼德博集合上的位置也有紧密关联\cite{s1992fractal}。
+事实上，如果选取的$c$点属于曼德博集合，那么所生成的朱利亚集合的图像就是联通的；
+反之，如果选取的$c$点不属于曼德博集合，那么所生成的朱利亚集合的图像就是不连通的，
+不连通的点的集合通常被称为dust,无论以何种分辨率查看都是由独立的点组成。
+\par
+正是这些特性以及满足分形的性质，研究朱利亚集合的图像性质以及其与曼德博集合的联系
+具有着重要的数学意义。
+
+\section{数学理论}
+与曼德博集合类似，朱利亚集合利用复二次多项式来定义迭代\cite{complexanalysis}：
+$$f_c(z)=z^2+c$$
+\par 
+其中$c$是一个给定的复常数。从$z=(x,y)$开始迭代，$z_{n+1}=z^2_n+c$，每次迭代
+的值依序如下数列所示：
+$$(0,f_c(0),f_c(f_c(0)),f_c(f_c(f_c(0)))\cdots)$$
+\par 
+不同的参数$c$与初始复数$z$可能使迭代值的模逐渐发散到无限大，也可能收敛在有限的区域内。
+曼德博集合$\mathrm{M}$是在满足初始复数$z=0$的前提下，使其不扩散的所有复数$c$的集合，
+而朱利亚集合是对于给定的$c$，使其不扩散的所有初始复数$z$的集合。
+\par 
+因为朱利亚集合是闭集，再加上所有的点都包含围绕原点半径为2的封闭盘中，故
+该集合是一个紧集。更具体地说，一个点$z$属于朱利亚集合是闭集，当且仅当
+$|z_n|\leq 2,\forall n\geq 0$.换句话说，朱利亚集合中的点$z$必须满足
+$z_n$的绝对值小于等于2，否则序列$z_n$将发散到无穷。这与曼德博集合的判定
+方法较为类似。
+
+
+\section{算法}
+\subsection{迭代算法}
+由于需要计算机绘制朱利亚集合的图像，并且使用无穷步迭代判断收敛，所以并不能
+严格求解出每个点的收敛情况。因此，本文采用了一种近似算法。即设置一个最大迭代次数
+\verb|max|,如果在迭代次数内$z_n>2$,则认为该点在迭代序列中会
+发散指无穷，即不属于朱利亚集合；反之则认为该点收敛，属于朱利亚集合。同时，由于
+在二维复平面当中点并不离散，所以将平面网格化，只考虑网格上的点是否属于朱利亚集合，
+并最终输出图像。
+\par 
+该算法流程图如下所示：
+
+\begin{figure}[h]
+    \centering
+\begin{tikzpicture}[node distance=20pt]
+    \node[draw, rounded corners]                        (start)   {Start};
+    \node[draw, below=of start]                         (step 1)  {p=第一个像素点};
+    \node[draw, below=of step 1]                        (step 2)  {i=0};
+    \node[draw, diamond, aspect=2, below=of step 2]     (choice1)  {i<max};
+    \node[draw, below=of choice1]                       (step 3)   {i=i+1};
+    %\node[draw, right=30pt of step 3]                   (step x)  {Step X};
+    \node[draw, below=of step 3]                        (step 4)   {z=z*z+c};
+    \node[draw, diamond, aspect=2, below=of step 4]     (choice2)  {|z|<=2};
+    \node[draw, below=of choice2]                        (step 5)   {p为白色};
+    \node[draw, right=50pt of choice2]                   (step 6)   {p为黑色};
+    \node[draw, diamond, aspect=2, right=40pt of step 5]     (choice3)   {p为最后点};
+    \node[draw, rounded corners, below=of choice3]  (end)     {End};
+    \node[draw, right=50pt of choice3]                  (step 7)   {p=next p};
+
+    \draw[->] (start)  -- (step 1);
+    \draw[->] (step 1) -- (step 2);
+    \draw[->] (step 2) -- (choice1);
+    \draw[->] (choice1) -- node[left]  {Yes} (step 3);
+    \draw[->] (step 3) -- (step 4);
+    \draw[->] (step 4) -- (choice2);
+    \draw[->] (step 5) -- (choice3);
+    \draw[->] (choice2) -- node[left] {No} (step 5);
+    \draw[->] (choice3) -- node[left] {Yes} (end);
+    \draw[->] (step 6) -- (choice3);
+    \draw[->] (choice3) -- node[above] {No} (step 7);
+    \draw[->] (step 7) -- (step 7|-step 2) -> (step 2);
+    %\draw[->] (choice2) -- node[above] {Yes}  (step 6);
+    \draw[->] (choice1) -- node[above] {No} (choice1-|step 6) -> (step 6);
+    \draw[->] (choice2) -- node[above] {Yes} ($(choice2.west)+(-1,0)$) -- ($(choice1.west)+(-1.12,0)$) -- (choice1);
+    %\draw[->] (choice1) -- node[above] {No}  (step x);
+    %\draw[->] (step x) -- (step x|-step 2) -> (step 2);
+  \end{tikzpicture}
+  \caption{迭代算法流程图}
+\end{figure}
+\par 
+其中迭代算法的伪代码如下：
+\begin{verbatim}
+    Read c
+    For every pixel p
+    i=0
+    z=complex of p
+    While i<max:
+      If |z|>2 then break
+      Else z=z^2+c
+    If i=max then mark pixel as black
+    Else mark as white
+\end{verbatim}
+\par 
+
+\subsection{绘制图像}
+本文采用直接生成bmp格式的文件并改变其中的像素点RGB数值达到绘制图像的效果。
+而bmp格式中每一个像素点由三个Byte构成，设置有关bmp格式的基本参数信息，然后
+根据上述迭代算法得到每一个像素点的颜色信息，最后再将颜色信息存入对应的地址即可。
+
+\section{数值算例}
+通过上述算法思路实现的代码需要提供几个参数，分别是展示图像的中心点$ox$,$oy$，全图
+显示的图像半径尺寸$dimension$，以及迭代中的复常数$c$。
+同时，可以在程序中修改最大迭代次数。
+由于之前的曼德博集合已经做过以上相关参数的数值算例及其分析，故本文不再重复分析，而是重点
+分析修改迭代复常数$c$对于图像的影响以及其与曼德博集合的相关性。
+
+\subsection{性质研究}
+\par 
+首先先输出默认缺省参数的图像，图像如下：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{../../pic/pic1.bmp}
+    \caption{ox=0,oy=0,dimension=2,c=0}
+\end{figure}
+\par
+可见在该参数下朱利亚集合是联通的。
+\par 
+更改迭代复常数$c$为(0.38,-0.249)并对其进行局部细节的放大可得以下图像：
+\begin{figure}[H]
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic2.bmp}
+        \caption{ox=0,oy=0,dimension=2,c=0.38-0.249i}        
+    \end{minipage}
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic3.bmp}
+        \caption{ox=0,oy=0,dimension=0.05,c=0.38-0.249i}        
+    \end{minipage}   
+\end{figure} 
+\par  
+
+
+由左图可见，更改迭代复常数$c$是朱利亚集合的图像的关键变量。同时，由右图可见
+对于朱利亚集合图像任意倍数放大，仍然保留有着无限精细的结构，并且图案
+具有某种程度上的相似性。由此可见，朱利亚集合和曼德博集合相似，具有分形图形特性。
+\par 
+\subsection{关联性研究}
+接下来考虑朱利亚集合和曼德博集合之间的联系。
+\par 
+由《分形几何》\cite{1997Techniques}中阐述的理论，使朱利亚集合联通的迭代复常数点应该属于曼德博集合，
+选取$c1$和$c2$,其中$c1 \in$曼德博集合,$c2 \notin$曼德博集合，这里不妨令
+$c1=-0.581+0.447i$,$c2=-0.4+0.6i$,分别得到以下两个朱利亚集合的图像。
+\begin{figure}[H]
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic4.bmp}
+        \caption{ox=0,oy=0,dimension=2,c=0.38-0.249i}        
+    \end{minipage}
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic5.bmp}
+        \caption{ox=0,oy=0,dimension=2,c=-0.4+0.6i}        
+    \end{minipage}   
+\end{figure} 
+\par 
+其中，左图仍是一个联通的朱利亚集合，而右图为不联通的点集。
+由此可见，当$c \in$曼德博集合时，朱利亚集合为联通点集。
+\par 
+以上数值算例针对朱利亚集合的连通性与曼德博集合之间进行了相关性分析。
+同时，朱利亚集合的图像形状和迭代复常数$c$属于曼德博集合的区域也有
+密切的关系。
+将曼德博集合根据形状划分成以下区域：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{../../pic/pic6.bmp}
+    \caption{曼德博集合划分}
+\end{figure}
+选取迭代复常数$c$分别在区域1、2中，不妨设$c1=0.1+0.3i$,$c2=-1$,
+朱利亚集合具有以下形状：
+\begin{figure}[H]
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic7.bmp}
+        \caption{ox=0,oy=0,dimension=2,c=0.1+0.3i}
+        \label{pic::8}        
+    \end{minipage}
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[scale=0.1]{../../pic/pic8.bmp}
+        \caption{ox=0,oy=0,dimension=2,c=-1}   
+        \label{pic::9}     
+    \end{minipage}   
+\end{figure}
+\par 
+$c$在1区域内，图像基本具有图\ref{pic::8}的性质，即集合边界简单闭曲线，
+有吸引不动点；$c$在2区域内，图像基本具有图\ref{pic::9}的性质，图像全部由四叉点组成，有吸引2周期轨。
+同理,3区域，4区域也有类似的性质。事实上，由于曼德博集合所具有的分形性质
+以及对称性，这种区域的划分可以无限进行下去，每一个曼德博集合内的点都唯一对应了
+某个区域编号，这也可以间接解释朱利亚集合具有的分形性质以及对称性的原因。
+
+\section{结论}
+根据上述算例分析，不难发现以下结论：
+\par 
+首先，由算法可知，朱利亚集合也是由简单的递推公式得来。
+朱利亚集合具有和曼德博集合类似的分形性质和对成性质。在对图像放大任意
+倍数之后，仍然具有精细的分形结构和递归细节。
+\par 
+其次，根据上述算例分析，朱利亚集合的集合图像与$c$的值密切相关，并且当$c \in$
+曼德博集合时，朱利亚集合为联通点集；反之，朱利亚集合为不连通点集。
+朱利亚集合的图像类型与$c$所属的曼德博集合的区域位置有关，具体可根据图像特性无限划分区域。
+事实上，朱利亚集合与曼德博集合就是一个四维分形在不同方向上的二维切片。

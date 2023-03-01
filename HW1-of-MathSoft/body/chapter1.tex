@@ -1,0 +1,32 @@
+\section{问题描述}
+\subsection{定义}
+考察任意一$n$次多项式
+\begin{equation}
+    p_n(x)=a_0+a_1(x-x_0)+a_2(x-x_0)^2+\cdots+a_n(x-x_0)^n
+    \label{eq::eq2}
+\end{equation}
+逐次求他们在点$x_0$的各阶导数，得到
+$$ p_n(x_0)=a_0,p^{'}_n(x_0)=a_1,p^{''}_n(x_0)=2! a_2,\cdots,p^{(n)}_n(x_0)=n!a_n,$$
+即
+$$ a_0=p_n(x_0),a_1=\frac{p^{'}_n(x_0)}{1!},a_2=\frac{p^{''}_n(x_0)}{2!},\cdots,a_n=\frac{p^{(n)}_n(x_0)}{n!}$$
+由此可见，多项式$n_n(x)$的各项系数由其所在点$x_0$的各阶导数值唯一确定。
+对于一般的函数$f$,设它在点$x_0$存在直到$n$阶的导数，由这些导数构造一个$n$次多项式
+\begin{equation}
+    T_n(x)=f(x_0)+\frac{f^{'}(x_0)}{1!}(x-x_0)+\frac{f^{''}(x_0)}{2!}(x-x_0)^2+\cdots+\frac{f^{(n)}_n(x_0)}{n!}(x-x_0)^n
+    \label{eq::eq3}
+\end{equation}
+称为函数$f$在点$x_0$的\textbf{泰勒多项式},$T_n(x)$的各项系数$\frac{f^{(k)}(x_0)}{k!}(k=1,2,\cdots,n)$称为\textbf{泰勒系数}，由上面对于多项式系数的讨论，
+易知$f(x)$与其泰勒多项式$T_n(x)$在点$x_0$有相同的函数值和相同的直至$n$阶导数值，即
+$$f^{(k)}(x_0)=T^{(k)}_n(x_0),k=0,1,2,\cdots,n.$$
+下面将要证明$f(x)-T_n(x)=o((x-x_0)^n)$,即以(\ref{eq::eq2})式所示的泰勒多项式逼近$f(x)$时，其误差关于$(x-x_0)^n$的高阶无穷小量.
+
+\subsection{定理}
+若函数\emph{f}在点$x_0$存在直至\emph{n}阶导数，
+则有 $f(x)=T_n(x)+o((x-x_0)^n)$，即
+
+\begin{equation}
+    f(x)=f(x_0)+f^{'}(x_0)(x-x_0)+\frac{f^{''}(x_0)}{2!}(x-x_0)^2+\cdots
+    +\frac{f^{(n)}(x_0)}{n!}(x-x_0)^{n}+o((x-x_0)^n)
+    \label{eq::eq4}
+\end{equation}
+

@@ -1,0 +1,118 @@
+\multicols{2}
+\section{引言}
+曼德博集合\cite{enwiki:1094796296}是一个在复平面上组成分形的点的集合，使用复二次多项式
+进行迭代。曼德博集合的图像表现出一个精心设计的无限复杂的边界\cite{s1992fractal}，
+在放大倍率增加的情况下，它展示了越来越精细的递归细节;
+在数学上，曼德博集合的边界被定义为是分形曲线,
+此递归细节的样式取决于所检查的集合边界的区域。
+\par 
+曼德博集合在数学圈外也很受欢迎，
+既因为它的美学吸引力，也因为它是应用简单规则产生的复杂结构
+的一个例子。它是数学可视化，展现数学之美的最著名例子之一。
+\par
+本文将介绍并探究曼德博集合图像生成的原理以及通过计算机迭代
+实现一定精度的曼德博集代码实现。
+
+\section{背景介绍}
+曼德博集合与分形定义\cite{mandelbrot1982fractal}紧密相关，而曼德博本人也提出了分形这个概念。
+其中分形满足以下几个特点：
+\begin{enumerate}
+    \setlength{\itemsep}{-5pt}
+    \item 具有无限精细的结构
+    \item 比例自相似性
+    \item 一般它的分数维大子它的拓扑维数
+    \item 可以由简单的方法定义，并由递归、迭代产生
+\end{enumerate}
+\par 
+而曼德博集合完美满足了上述几个特点，作为分形理论的典型例子，研究曼德博集合
+具有重要的意义。
+
+\section{数学理论}
+利用复二次多项式来定义迭代：
+$$f_c(z)=z^2+c$$
+\par 
+其中$c$是一个复数参数。从$z=0$开始迭代，$z_{n+1}=z^2_n+c$，每次迭代
+的值依序如下数列所示：
+$$(0,f_c(0),f_c(f_c(0)),f_c(f_c(f_c(0)))\cdots)$$
+\par 
+不同的参数$c$可能使迭代值的模逐渐发散到无限大，也可能收敛在有限的区域内。
+曼德博集合$\mathrm{M}$就是使其不扩散的所有复数$c$的集合。
+\par 
+因为曼德博集合是闭集，再加上所有的点都包含围绕原点半径为2的封闭盘中，故
+该集合是一个紧集。更具体地说，一个点$c$属于曼德博集合是闭集，当且仅当
+$|z_n|\leq 2,\forall n\geq 0$.换句话说，曼德博集合中的点$c$必须满足
+$z_n$的绝对值小于等于2，否则序列$z_n$将发散到无穷。
+
+
+\section{算法}
+\subsection{迭代算法}
+由于需要计算机绘制曼德博集合的图像，并且使用无穷步迭代判断收敛，所以并不能
+严格求解出每个点的收敛情况。因此，本文采用了一种近似算法。即设置一个最大迭代次数
+\verb|maximum_iterator|,如果在迭代次数内$z_n>2$,则认为该点在迭代序列中会
+发散指无穷，即不属于曼德博集合；反之则认为该点收敛，属于曼德博集合。同时，由于
+在二维复平面当中点并不离散，所以将平面网格化，只考虑网格上的点是否属于曼德博集合，
+并最终输出图像。
+\par 
+其中迭代算法的伪代码如下：
+\begin{verbatim}
+    For 图像中的每一个像素点 p
+    c = p代表的复平面上的复数
+    While 循环次数i小于maximum_iterator:
+        If |z| > 2 then break
+        Else z = z^2 + c
+    If i = maximum_iterator then
+        标记像素点为黑
+    Else 标记像素点为白
+\end{verbatim}
+
+\subsection{绘制图像}
+本文采用直接生成bmp格式的文件并改变其中的像素点RGB数值达到绘制图像的效果。
+而bmp格式中每一个像素点由三个Byte构成，设置有关bmp格式的基本参数信息，然后
+根据上述迭代算法得到每一个像素点的颜色信息，最后再将颜色信息存入对应的地址即可。
+
+\section{数值算例}
+通过上述算法思路实现的代码需要提供几个参数，分别是展示图像的中心点$ox$,$oy$以及全图
+显示的图像半径尺寸$dimension$.同时，可以在程序中修改最大迭代次数$maximum_iterator$。
+\par 
+首先考虑改变最大迭代次数并输出图像，得到以下对应图像：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{./pic/graph1.bmp}
+    \caption{N=10,ox=0,oy=0,dimension=2}
+\end{figure}
+\par 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{./pic/graph2.bmp}
+    \caption{N=100,ox=0,oy=0,dimension=2}
+\end{figure}
+由此可见，迭代次数越大，图像也就更加精细，边界上的细节也就更多。
+\par 
+改变中心点的位置$ox$,$oy$,会得到以下对应图像：
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{./pic/graph3.bmp}
+    \caption{N=100,ox=0.3,oy=0.5,dimension=2}
+\end{figure}
+\par 
+改变图像半径尺寸$dimension$,进行图像的缩放,得到一下对应图像。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{./pic/graph4.bmp}
+    \caption{N=100,ox=0.3,oy=0.5,dimension=0.1}
+\end{figure}
+\par 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=7cm]{./pic/graph5.bmp}
+    \caption{N=100,ox=0.3,oy=0.45,dimension=0.01}
+\end{figure}
+不难发现，曼德博集合进行放大后仍然有着无限精细的结构，并且图案
+具有某种程度上的相似性。由此可见，曼德博集合具有分形图形特性。
+
+\section{结论}
+由算法可知，曼德博集合图像可以通过简单的迭代得到；
+同时，根据以上的数据算例，首先验证了算法的正确性，
+其次不难发现，曼德博集合具有上下对称性。
+其实不难从迭代公式本身推得该结论；同时，曼德博集合也满足分形的特征，
+经过数倍放大之后仍具有无限精细的结构，并且图案具有某种程度的相似性。

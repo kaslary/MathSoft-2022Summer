@@ -1,0 +1,20 @@
+\newpage
+\section{证明}
+\begin{proof}
+    设
+    $$R_n(x)=f(x)-T_n(x),Q_n(x)=(x-x_0)^n$$
+    现在只要证
+    $$\lim_{x \to x_0}\frac{R_n(x)}{Q_n(x)}=0$$
+    由关系式(\ref{eq::eq3})可知，
+    $$R_n(x_0)=R^{'}_n(x_0)=\cdots=R^{(n)}_n(x_0)=0,$$
+    并易知
+    $$Q_n(x_0)=Q^{'}_n(x_0)=\cdots=Q^{(n-1)}_n(x_0)=0,Q^{(n)}_n(x_0)=n!.$$
+    因为$f^{(n)}(x_0)$存在，所以在$x_0$的某邻域$\mathbf{U}(x_0)$上$f$存在$n-1$阶导函数.于是，当$x\in \mathring{U}(x_0) $且$x \to x_0$时，允许
+    接连使用洛必达法则$n-1$次，得到
+    $$\begin{aligned}
+        \lim_{x \to x_0}\frac{R_n(x)}{Q_n(x)}&=\lim_{x \to x_0}\frac{R^{'}_n(x)}{Q^{'}_n(x)}=\cdots=\lim_{x \to x_0}\frac{R^{(n-1)}_n(x)}{Q^{(n-1)}_n(x)} \\
+        &=\lim_{x \to x_0}\frac{f^{(n-1)}(x)-f^{(n-1)}(x_0)-f^{(n)}(x_0)(x-x_0)}{n(n-1)\cdots 2(x-x_0)} \\
+        &=\frac{1}{n!}\lim_{x \to x_0}\Big[\frac{f^{(n-1)}(x)-f^{(n-1)}(x_0)}{x-x_0}-f^{(n)}(x_0)\Big] \\
+        &=0
+    \end{aligned}$$
+\end{proof}
